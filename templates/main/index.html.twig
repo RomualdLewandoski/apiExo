@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    <div class="container pt-5">
+        <div class="row">
+            <div class="col-md-8">
+                <table id="myTodoTable" class="table table-striped">
+                    <thead class="thead-dark">
+                        <th>ID</th>
+                        <th>Action</th>
+                        <th></th>
+                    </thead>
+
+                    <tbdody>
+                        <tr>
+                            <td>#</td>
+                            <td>MonAction</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning"><i class="fas fa-lock"></i></button>
+                                <button class="btn btn-sm btn-warning"><i class="fas fa-lock-open"></i></button>
+                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+
+                            </td>
+                        </tr>
+                    </tbdody>
+                </table>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Ajouter une tache
+                    </div>
+                    <div class="card-body">
+                        <form id="addTodo">
+                            <div class="form-group">
+                                <label for="actionInput">Action</label>
+                                <input type="text" class="form-control" id="actionInput"
+                                       placeholder="Action a faire">
+                            </div>
+                            <div class="text-center">
+                                <button class="btn btn-sm btn-success" type="submit">Ajouter la tache</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
