@@ -7,23 +7,14 @@
             <div class="col-md-8">
                 <table id="myTodoTable" class="table table-striped">
                     <thead class="thead-dark">
-                        <th>ID</th>
-                        <th>Action</th>
-                        <th></th>
+                    <th>ID</th>
+                    <th>Action</th>
+                    <th></th>
                     </thead>
 
-                    <tbdody>
-                        <tr>
-                            <td>#</td>
-                            <td>MonAction</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning"><i class="fas fa-lock"></i></button>
-                                <button class="btn btn-sm btn-warning"><i class="fas fa-lock-open"></i></button>
-                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                    <tbody>
 
-                            </td>
-                        </tr>
-                    </tbdody>
+                    </tbody>
                 </table>
             </div>
 
@@ -49,4 +40,153 @@
             </div>
         </div>
     </div>
+
+    <script>
+
+        $(document).ready(function () {
+            var myTable = $('#myTodoTable')
+            var myTableBody = myTable.children('tbody')
+            var myForm = $('#addTodo')
+
+            //requete pour lister nos todos
+            $.get("{{ path('list_all') }}", function (data) {
+                let x
+                for (x in data.todos) {
+                    let todo = data.todos[x]
+                    console.log(todo)
+                    let lockBtn
+                    let todoName
+
+                    if (todo.isDone) {
+                        lockBtn = `<button class="btn btn-sm btn-warning" onclick="toggleTodo(` + todo.id + `)">
+                                        <i class="fas fa-lock-open"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteTodo(`+todo.id+`)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    `
+                        todoName = "<span style='text-decoration: line-through;'>" + todo.action + "</span>"
+                    } else {
+                        lockBtn = `<button class="btn btn-sm btn-warning" onclick="toggleTodo(` + todo.id + `)">
+                                        <i class="fas fa-lock"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteTodo(`+todo.id+`)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    `
+                        todoName = "<span>" + todo.action + "</span>"
+
+                    }
+
+
+                    let str = `<tr data-id="` + todo.id + `">
+                                    <td>` + todo.id + `</td>
+                                    <td>` + todoName + ` </td>
+                                    <td> ` + lockBtn + ` </td>
+                                </tr>`
+                    myTableBody.append(str)
+                }
+            })
+
+            //Lorsque mon formulaire est validé
+            myForm.submit(function (event) {
+                //Requete pour ajouter une todo
+                //je bloque la redirection de mon formulaire
+                event.preventDefault()
+                //on définit la valeur de l'input comme étant la variable todoAction
+                let todoAction = $('#actionInput').val()
+                //on lance la requete ajax (en post)
+                $.post("{{ path('new_todo') }}",
+                    {
+                        action: todoAction
+                    }
+                    , function (data) {
+                        console.log(data)
+                        if (data.status == 500) {
+                            alert("Le champs est vide !")
+                        } else {
+                            //tout va bien
+                            let lockBtn = `<button class="btn btn-sm btn-warning" onclick="toggleTodo(` + data.id + `)">
+                                        <i class="fas fa-lock"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteTodo(`+data.id+`)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    `
+                            let todoName = "<span>" + todoAction + "</span>"
+
+                            let str = `<tr data-id="` + data.id + `">
+                                    <td>` + data.id + `</td>
+                                    <td>` + todoName + ` </td>
+                                    <td> `+ lockBtn +` </td>
+                                </tr>`
+                            myTableBody.append(str)
+                            $('#actionInput').val('')
+                        }
+                    })
+
+            })
+
+
+        })
+
+        function deleteTodo(id){
+            var myTable = $('#myTodoTable')
+            var myTableBody = myTable.children('tbody')
+            let url = "{{ path('delete_todo', {'id': 'toto'}) }}"
+            url = url.replace('toto', id)
+            $.get(url, function (data) {
+                if (data.status == 404){
+                    alert("todo not found")
+                }else{
+                    myTableBody.children().each(function () {
+                        if ($(this).attr("data-id") == id) {
+                            $(this).remove()
+                        }
+                    })
+                }
+            })
+
+        }
+
+        function toggleTodo(id) {
+            var myTable = $('#myTodoTable')
+            var myTableBody = myTable.children('tbody')
+
+
+            let url = "{{ path('finish_todo', {'id': 'toto'}) }}"
+            url = url.replace('toto', id)
+            $.get(url, function (data) {
+                if (data.status == 404) {
+                    alert("todo not found")
+                } else {
+                    myTableBody.children().each(function () {
+                        if ($(this).attr("data-id") == id) {
+                            let child = $(this)
+                            let col1 = child.children(0) // 1er TD
+                            let col2 = child.children(1) // 2eme TD
+                            let col3 = child.children(2) // 3eme TD
+
+                            let toggleButton = col3.children(0)
+                            let icon = toggleButton.children('i')
+                            let actionSpan = col2.children('span')
+                            if (icon.hasClass('fa-lock-open')) {
+                                icon.removeClass('fa-lock-open')
+                                icon.addClass('fa-lock')
+                                actionSpan.css('text-decoration', 'none')
+                            } else {
+                                icon.removeClass('fa-lock')
+                                icon.addClass('fa-lock-open')
+                                actionSpan.css('text-decoration', 'line-through')
+                            }
+                        }
+                    })
+
+
+                }
+            })
+        }
+
+
+    </script>
 {% endblock %}

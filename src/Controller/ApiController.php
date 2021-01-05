@@ -81,6 +81,7 @@ class ApiController extends AbstractController
         } else {
             $todo = new Todo();
             $todo->setAction($action);
+            $todo->setIsDone(false);
             $em = $this->getDoctrine()->getManager();
             $em->persist($todo);
             $em->flush();
