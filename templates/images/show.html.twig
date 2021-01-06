@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Images{% endblock %}
+
+{% block body %}
+    <h1>Images</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ image.id }}</td>
+            </tr>
+
+        <tr>
+            <th>ImageName</th>
+            <td>{{ image.image }}</td>
+        </tr>
+
+        <tr>
+            <th>Image</th>
+            <td>
+                <!--<img src="{{ vich_uploader_asset(image, 'imageFile') }}" alt="">-->
+
+                <img src="{{ imageUrl }}" alt="" id="monImage">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('images_index') }}">back to list</a>
+
+    <a href="{{ path('images_edit', {'id': image.id}) }}">edit</a>
+
+
+    <script>
+       /* $(document).ready(function(){
+            let imageUrl = "{{ imageUrl }}"
+            $('#monImage').attr('src', imageUrl)
+        })*/
+    </script>
+    {{ include('images/_delete_form.html.twig') }}
+{% endblock %}

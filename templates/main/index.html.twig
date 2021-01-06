@@ -61,7 +61,7 @@
                         lockBtn = `<button class="btn btn-sm btn-warning" onclick="toggleTodo(` + todo.id + `)">
                                         <i class="fas fa-lock-open"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteTodo(`+todo.id+`)">
+                                    <button class="btn btn-sm btn-danger" onclick="deleteTodo(` + todo.id + `)">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                     `
@@ -70,7 +70,7 @@
                         lockBtn = `<button class="btn btn-sm btn-warning" onclick="toggleTodo(` + todo.id + `)">
                                         <i class="fas fa-lock"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteTodo(`+todo.id+`)">
+                                    <button class="btn btn-sm btn-danger" onclick="deleteTodo(` + todo.id + `)">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                     `
@@ -109,7 +109,7 @@
                             let lockBtn = `<button class="btn btn-sm btn-warning" onclick="toggleTodo(` + data.id + `)">
                                         <i class="fas fa-lock"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteTodo(`+data.id+`)">
+                                    <button class="btn btn-sm btn-danger" onclick="deleteTodo(` + data.id + `)">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                     `
@@ -118,7 +118,7 @@
                             let str = `<tr data-id="` + data.id + `">
                                     <td>` + data.id + `</td>
                                     <td>` + todoName + ` </td>
-                                    <td> `+ lockBtn +` </td>
+                                    <td> ` + lockBtn + ` </td>
                                 </tr>`
                             myTableBody.append(str)
                             $('#actionInput').val('')
@@ -130,15 +130,15 @@
 
         })
 
-        function deleteTodo(id){
+        function deleteTodo(id) {
             var myTable = $('#myTodoTable')
             var myTableBody = myTable.children('tbody')
             let url = "{{ path('delete_todo', {'id': 'toto'}) }}"
             url = url.replace('toto', id)
             $.get(url, function (data) {
-                if (data.status == 404){
+                if (data.status == 404) {
                     alert("todo not found")
-                }else{
+                } else {
                     myTableBody.children().each(function () {
                         if ($(this).attr("data-id") == id) {
                             $(this).remove()
